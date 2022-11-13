@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace IssueTrackerBackend.Models;
 
@@ -11,9 +12,16 @@ public class User
 
     public string Email { get; set; }
     
+    [JsonIgnore]
     public byte[] PasswordSalt { get; set; }
 
+    [JsonIgnore]
     public byte[] PasswordHash { get; set; }
 
+    [JsonIgnore]
     public string Role { get; set; } = "user";
+
+    // without JsonIgnore data annotation we'll get circular object error
+    [JsonIgnore]
+    public List<Ticket> Tickets { get; set; } //List of all tickets that have been assigned to the user
 }

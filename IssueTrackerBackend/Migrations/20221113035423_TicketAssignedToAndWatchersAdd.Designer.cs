@@ -4,6 +4,7 @@ using IssueTrackerBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IssueTrackerBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221113035423_TicketAssignedToAndWatchersAdd")]
+    partial class TicketAssignedToAndWatchersAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,43 +75,41 @@ namespace IssueTrackerBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TicketId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TicketId");
+
+                    b.HasIndex("TicketId1");
+
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TicketUser", b =>
+            modelBuilder.Entity("IssueTrackerBackend.Models.User", b =>
                 {
-                    b.Property<int>("MembersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MembersId", "TicketsId");
-
-                    b.HasIndex("TicketsId");
-
-                    b.ToTable("TicketUser");
-                });
-
-            modelBuilder.Entity("TicketUser", b =>
-                {
-                    b.HasOne("IssueTrackerBackend.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("IssueTrackerBackend.Models.Ticket", null)
+                        .WithMany("AssignedTo")
+                        .HasForeignKey("TicketId");
 
                     b.HasOne("IssueTrackerBackend.Models.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("WatchedBy")
+                        .HasForeignKey("TicketId1");
+                });
+
+            modelBuilder.Entity("IssueTrackerBackend.Models.Ticket", b =>
+                {
+                    b.Navigation("AssignedTo");
+
+                    b.Navigation("WatchedBy");
                 });
 #pragma warning restore 612, 618
         }

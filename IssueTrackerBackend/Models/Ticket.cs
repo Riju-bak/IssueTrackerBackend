@@ -36,8 +36,6 @@ public class Ticket
     [DisplayName("Due Date")]
     public DateTime? DueDate { get; set; }
 
-    public List<User>? AssignedTo { get; set; } = new(); //List of users the ticket has been assigned to (Engineers/Developers)
+    public List<User> Members { get; set; }//List of users the ticket has been assigned to
 
-    public List<User>? WatchedBy { get; set; } =
-        new();  //List of users who are supervising this ticket (Teamlead, manager etc.)
 }
