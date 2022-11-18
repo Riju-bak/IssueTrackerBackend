@@ -52,52 +52,49 @@ public class TicketsController : ControllerBase
         ticket.Status = request.Status;
         ticket.Priority = request.Priority;
         ticket.DueDate = request.DueDate;
+        ticket.Members = new List<User>();
 
         await _context.Tickets.AddAsync(ticket);
         await _context.SaveChangesAsync();
         return Created("", ticket);
     }
 
-    //TODO: Write Ticket update API
-    // [HttpPut("{id}")]
-    // public async Task<ActionResult<Ticket>> Update(int id, [FromBody] TicketUpdateRequest request)
-    // {
-    //     var ticket = await _context.Tickets.FindAsync(id);
-    //     if (ticket == null)
-    //     {
-    //         return NotFound($"Ticket ID: {id} not found");
-    //     }
-    //
-    //     if (!ModelState.IsValid)
-    //     {
-    //         return BadRequest(ModelState);
-    //     }
-    //
-    //     ticket.Description = request.Description;
-    //     ticket.Priority = request.Priority;
-    //     ticket.Status = request.Status;
-    //     ticket.DueDate = request.DueDate;
-    //     
-    //     ticket.AssignedTo = new();
-    //     ticket.WatchedBy = new();
-    //     foreach (int userId in request.AssignedTo)
-    //     {
-    //         var user = await _context.Users.FindAsync(userId);
-    //         ticket.AssignedTo.Add(user);
-    //         ticket.WatchedBy.Add(user);
-    //     }
-    //     foreach (int userId in request.WatchedBy)
-    //     {
-    //         var user = await _context.Users.FindAsync(userId);
-    //         if (!ticket.WatchedBy.Any(u => u.Id == userId))
-    //         {
-    //             ticket.WatchedBy.Add(user);
-    //         }
-    //     }
-    //
-    //     await _context.SaveChangesAsync();
-    //     return Ok(request);
-    // }
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Ticket>> Update(int id, [FromBody] TicketUpdateRequest request)
+    {
+        var ticket = await _context.Tickets
+            .Where(t => t.Id == id)
+            .Include(t => t.Members)
+            .FirstOrDefaultAsync();
+        if (ticket == null)
+        {
+            return NotFound($"Ticket ID: {id} not found");
+        }
+    
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+    
+        ticket.Description = request.Description;
+        ticket.Priority = request.Priority;
+        ticket.Status = request.Status;
+        ticket.DueDate = request.DueDate;
+
+        List<User> members = new();
+        foreach (int userId in request.Members)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound("One or more member ids are invalid");
+            }
+            members.Add(user);
+        }
+        ticket.Members = members;
+        await _context.SaveChangesAsync();
+        return Ok(ticket);
+    }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)

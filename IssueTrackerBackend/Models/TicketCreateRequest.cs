@@ -15,6 +15,6 @@ public class TicketCreateRequest
     public Priority? Priority { get; set; }
 
     [DisplayName("Due Date")]
-    public DateTime? DueDate { get; set; } = DateTime.Now;
+    public DateTime? DueDate { get; set; }
 
 }
