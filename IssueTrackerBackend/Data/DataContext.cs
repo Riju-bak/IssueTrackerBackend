@@ -11,4 +11,8 @@ public class DataContext : DbContext
 
     public DbSet<Ticket>? Tickets { get; set; }
     public DbSet<User>? Users { get; set; }
+    
+    public DbSet<Board>? Boards { get; set; }
+    
+    public DbSet<Workspace>? Workspaces { get; set; }
 }

@@ -48,6 +48,7 @@ public class TicketsController : ControllerBase
 
         var ticket = new Ticket();
 
+        ticket.Title = request.Title;
         ticket.Description = request.Description;
         ticket.Status = request.Status;
         ticket.Priority = request.Priority;

@@ -24,4 +24,7 @@ public class User
     // without JsonIgnore data annotation we'll get circular object error
     [JsonIgnore]
     public List<Ticket> Tickets { get; set; } //List of all tickets that have been assigned to the user
+
+    [JsonIgnore]
+    public List<Workspace> Workspaces { get; set; } //List of all workspaces the user is a part of
 }

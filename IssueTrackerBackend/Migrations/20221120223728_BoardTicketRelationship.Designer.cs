@@ -4,6 +4,7 @@ using IssueTrackerBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IssueTrackerBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221120223728_BoardTicketRelationship")]
+    partial class BoardTicketRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,12 +37,7 @@ namespace IssueTrackerBackend.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("WorkspaceId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("Boards");
                 });
@@ -58,7 +55,8 @@ namespace IssueTrackerBackend.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime?>("DueDate")
                         .HasColumnType("datetime2");
@@ -68,10 +66,6 @@ namespace IssueTrackerBackend.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -113,27 +107,6 @@ namespace IssueTrackerBackend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("IssueTrackerBackend.Models.Workspace", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Workspaces");
-                });
-
             modelBuilder.Entity("TicketUser", b =>
                 {
                     b.Property<int>("MembersId")
@@ -147,28 +120,6 @@ namespace IssueTrackerBackend.Migrations
                     b.HasIndex("TicketsId");
 
                     b.ToTable("TicketUser");
-                });
-
-            modelBuilder.Entity("UserWorkspace", b =>
-                {
-                    b.Property<int>("MembersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkspacesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MembersId", "WorkspacesId");
-
-                    b.HasIndex("WorkspacesId");
-
-                    b.ToTable("UserWorkspace");
-                });
-
-            modelBuilder.Entity("IssueTrackerBackend.Models.Board", b =>
-                {
-                    b.HasOne("IssueTrackerBackend.Models.Workspace", null)
-                        .WithMany("Boards")
-                        .HasForeignKey("WorkspaceId");
                 });
 
             modelBuilder.Entity("IssueTrackerBackend.Models.Ticket", b =>
@@ -193,29 +144,9 @@ namespace IssueTrackerBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserWorkspace", b =>
-                {
-                    b.HasOne("IssueTrackerBackend.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IssueTrackerBackend.Models.Workspace", null)
-                        .WithMany()
-                        .HasForeignKey("WorkspacesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("IssueTrackerBackend.Models.Board", b =>
                 {
                     b.Navigation("Tickets");
-                });
-
-            modelBuilder.Entity("IssueTrackerBackend.Models.Workspace", b =>
-                {
-                    b.Navigation("Boards");
                 });
 #pragma warning restore 612, 618
         }
