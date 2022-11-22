@@ -4,6 +4,7 @@ using IssueTrackerBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IssueTrackerBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221122012937_BoardExplicitWorkspaceRef")]
+    partial class BoardExplicitWorkspaceRef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +55,7 @@ namespace IssueTrackerBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BoardId")
+                    b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -169,7 +171,7 @@ namespace IssueTrackerBackend.Migrations
                     b.HasOne("IssueTrackerBackend.Models.Workspace", "Workspace")
                         .WithMany("Boards")
                         .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Workspace");
@@ -177,13 +179,9 @@ namespace IssueTrackerBackend.Migrations
 
             modelBuilder.Entity("IssueTrackerBackend.Models.Ticket", b =>
                 {
-                    b.HasOne("IssueTrackerBackend.Models.Board", "Board")
+                    b.HasOne("IssueTrackerBackend.Models.Board", null)
                         .WithMany("Tickets")
-                        .HasForeignKey("BoardId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Board");
+                        .HasForeignKey("BoardId");
                 });
 
             modelBuilder.Entity("TicketUser", b =>

@@ -15,4 +15,18 @@ public class DataContext : DbContext
     public DbSet<Board>? Boards { get; set; }
     
     public DbSet<Workspace>? Workspaces { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Workspace>()
+            .HasMany(e => e.Boards)
+            .WithOne(e => e.Workspace)
+            .OnDelete(DeleteBehavior.ClientCascade);
+        
+        modelBuilder.Entity<Board>()
+            .HasMany(e => e.Tickets)
+            .WithOne(e => e.Board)
+            .OnDelete(DeleteBehavior.ClientCascade);
+    }
 }

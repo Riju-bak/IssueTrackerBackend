@@ -46,6 +46,13 @@ public class TicketsController : ControllerBase
             return BadRequest(ModelState);
         }
 
+        int? boardId = request.Board;
+        var board = await _context.Boards.FindAsync(boardId);
+        if (board == null)
+        {
+            return NotFound($"Board ID: {boardId} not found");
+        }
+
         var ticket = new Ticket();
 
         ticket.Title = request.Title;
@@ -53,6 +60,7 @@ public class TicketsController : ControllerBase
         ticket.Status = request.Status;
         ticket.Priority = request.Priority;
         ticket.DueDate = request.DueDate;
+        board.Tickets.Add(ticket);
         ticket.Members = new List<User>();
 
         await _context.Tickets.AddAsync(ticket);

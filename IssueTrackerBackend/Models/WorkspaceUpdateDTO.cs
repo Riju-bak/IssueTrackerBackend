@@ -2,7 +2,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace IssueTrackerBackend.Models;
 
-public class WorkspaceUpdateDTO : WorkspaceCreateDTO
+public class WorkspaceUpdateDTO
 {
-    public List<int> Members { get; set; }
+    
+    [Required]
+    [MaxLength(20)]
+    public string? Title { get; set; }
+
+    [MaxLength(250)]
+    public string Description { get; set; } = "";
+    [Required]
+    public List<int>? Members { get; set; }
 }

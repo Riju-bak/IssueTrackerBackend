@@ -20,5 +20,7 @@ public class TicketCreateRequest
 
     [DisplayName("Due Date")]
     public DateTime? DueDate { get; set; }
-
+    
+    [Required] 
+    public int? Board { get; set; } //The Board ID
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace IssueTrackerBackend.Models;
 
@@ -38,5 +39,8 @@ public class Ticket
     public DateTime? DueDate { get; set; }
 
     public List<User> Members { get; set; }//List of users the ticket has been assigned to
+
+    [JsonIgnore]
+    public Board Board { get; set; }
 
 }

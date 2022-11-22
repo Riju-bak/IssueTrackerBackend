@@ -12,4 +12,7 @@ public class Board
     public string Title { get; set; }
 
     public List<Ticket> Tickets { get; set; } = new();
+
+    [JsonIgnore]
+    public Workspace Workspace { get; set; }
 }

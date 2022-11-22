@@ -21,6 +21,7 @@ public class WorkspacesController : ControllerBase
     {
         var workspaces = await _context.Workspaces
             .Include(w => w.Boards)
+            .ThenInclude(b => b.Tickets)
             .Include(w => w.Members)
             .ToListAsync();
         return Ok(workspaces);
@@ -31,6 +32,7 @@ public class WorkspacesController : ControllerBase
     {
         var workspace = await _context.Workspaces
             .Include(w => w.Boards)
+            .ThenInclude(b => b.Tickets)
             .Include(w => w.Members)
             .FirstOrDefaultAsync(w => w.Id == id);
         if (workspace == null)
@@ -65,6 +67,7 @@ public class WorkspacesController : ControllerBase
             .Where(w => w.Id == id)
             .Include(w => w.Members)
             .Include(w => w.Boards)
+            .ThenInclude(b => b.Tickets)
             .FirstOrDefaultAsync();
         if (workspace == null)
         {
@@ -97,12 +100,16 @@ public class WorkspacesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var workspace = await _context.Workspaces.FindAsync(id);
+        var workspace = await _context.Workspaces
+            
+            .Include(w => w.Boards)
+            .ThenInclude(b => b.Tickets)
+            .Where(w => w.Id == id)
+            .FirstOrDefaultAsync();
         if (workspace == null)
         {
             return NotFound($"Workspace ID: {id} not found");
         }
-
         _context.Workspaces.Remove(workspace);
         await _context.SaveChangesAsync();
         return NoContent();
